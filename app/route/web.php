@@ -16,6 +16,11 @@ class Route
         require 'app/controller/productcontroller.php';
     }
 
+    public function user()
+    {
+        require 'app/controller/usercontroller.php';
+    }
+
     public function __call($r, $q)
     {
         echo "Not Found page \n";

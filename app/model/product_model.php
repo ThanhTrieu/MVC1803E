@@ -59,4 +59,39 @@ class ProductModel extends Database
         }
         return $data;
     }
+    public function getInfoData($id)
+    {
+        $data = [];
+        $sql = "SELECT a.name AS nameProduct, b.catname, c.name AS nameManu, d.name AS nameSYS FROM products AS a INNER JOIN categories AS b ON a.catid = b.id INNER JOIN manufacture AS c ON a.manuid = c.id INNER JOIN systems AS d ON a.sysid = d.id WHERE a.id = :id";
+        $stmt = $this->pd->prepare($sql);
+        if($stmt){
+            $stmt->bindParam(':id',$id, PDO::PARAM_INT);
+            if($stmt->execute()){
+                if($stmt->rowCount() > 0){
+                    $data = $stmt->fecth(PDO::FETCH_ASSOC);
+                }
+            }
+            $stmt->closeCursor();
+        }
+        return $data;
+    }
+
+    public function findDataByKeyword($keyword = '')
+    {
+        $data = [];
+        $sql = "SELECT * FROM products AS a WHERE a.name LIKE :name OR a.price LIKE :price";
+        $key = "%".$keyword."%";
+        $stmt = $this->pd->prepare($sql);
+        if($stmt){
+            $stmt->bindParam(':name',$key,PDO::PARAM_STR);
+            $stmt->bindParam(':price',$key,PDO::PARAM_STR);
+            if($stmt->execute()){
+                if($stmt->rowCount() > 0){
+                    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                }
+            }
+            $stmt->closeCursor();
+        }
+        return $data;
+    }
 }
