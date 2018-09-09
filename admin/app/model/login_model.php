@@ -65,4 +65,47 @@ class LoginModel extends Database
         }
         return $data;
     }
+    public function checkExitsUserAndEmail($user, $email)
+    {
+        $flag = false;
+        $sql = "SELECT a.id FROM admins AS a WHERE a.username = :username OR a.email = :email";
+        $stmt = $this->pd->prepare($sql);
+        if($stmt){
+            $stmt->bindParam(':username', $user, PDO::PARAM_STR);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            if($stmt->execute()){
+                if($stmt->rowCount() > 0){
+                    $flag = true;
+                }
+            }
+            $stmt->closeCursor();
+        }
+        return $flag;
+    }
+
+    public function addDataAdmin($username, $password, $email, $fullname, $phone, $address)
+    {
+        $flag = false;
+        $status = 1;
+        $createtime = date('Y-m-d H:i:s');
+        $updatetime = null;
+        $sql = "INSERT INTO admins(username, password, email, status, phone, fullname, address, createtime, updatetime) VALUES(:username, :password, :email, :status, :phone, :fullname, :address, :createtime, :updatetime)";
+        $stmt = $this->pd->prepare($sql);
+        if($stmt){
+            $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+            $stmt->bindParam(':password', $password, PDO::PARAM_STR);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            $stmt->bindParam(':status', $status, PDO::PARAM_INT);
+            $stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
+            $stmt->bindParam(':fullname', $fullname, PDO::PARAM_STR);
+            $stmt->bindParam(':address', $address, PDO::PARAM_STR);
+            $stmt->bindParam(':createtime', $createtime, PDO::PARAM_STR);
+            $stmt->bindParam(':updatetime', $updatetime, PDO::PARAM_STR);
+            if($stmt->execute()){
+                $flag = true;
+            }
+            $stmt->closeCursor();
+        }
+        return $flag;
+    }
 }

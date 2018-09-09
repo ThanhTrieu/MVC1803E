@@ -1,3 +1,4 @@
+<?php if(!defined('BASE_PATH_ADMIN')){ die('Ban khong co quyen truy cap'); } ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,7 +16,7 @@
             </div>
             <hr>
             <div class="col-lg-12 mt-5">
-                <a class="btn btn-primary" href="#">Add user + </a>
+                <a class="btn btn-primary" href="?c=dashboard&m=add">Add user + </a>
                 <table class="table table-striped table-bordered mt-2">
                     <thead class="table-dark">
                         <tr>
