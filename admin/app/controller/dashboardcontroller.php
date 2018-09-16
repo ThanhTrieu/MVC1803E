@@ -26,7 +26,26 @@ class DashboardController extends MY_Controller
     public function index()
     {
         $username = $_SESSION['user'] ?? '';
-        $lstUser = $this->user->getAllDataUser();
+        // xu ly search data
+        $keyword = $_GET['s'] ?? '';
+        $keyword = strip_tags($keyword);
+        $page = $_GET['page'] ?? '';
+        $page = (is_numeric($page) && $page > 0) ? $page : 1;
+
+        $link = [
+            'c'=>'dashboard',
+            'm'=>'index',
+            'page' => '{page}',
+            's'=>$keyword
+        ];
+
+        $myLinks = CommonHelper::createLink($link);
+        $countlstUser = $this->user->getAllDataUser($keyword);
+
+        $panigation = CommonHelper::panigation(count($countlstUser), $page, $myLinks, $keyword);
+
+        $lstUser = $this->user->getAllDataUserByPage($panigation['start'], $keyword, $panigation['limit']);
+
         // xoa bo loi phan add user
         if(isset($_SESSION['errUsers'])){
             unset($_SESSION['errUsers']);

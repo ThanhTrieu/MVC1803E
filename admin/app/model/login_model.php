@@ -16,13 +16,39 @@ class LoginModel extends Database
         parent::__construct();
     }
 
-    public function getAllDataUser()
+    public function getAllDataUserByPage($start, $keyword, $limit = 2)
+    {
+        $data = [];
+        $key = "%".$keyword."%";
+        $sql = "SELECT * FROM admins AS a WHERE a.username LIKE :user OR a.email LIKE :email LIMIT :start, :limmit";
+        $stmt = $this->pd->prepare($sql);
+        if($stmt){
+            $stmt->bindParam(':user',$key,PDO::PARAM_STR);
+            $stmt->bindParam(':email',$key,PDO::PARAM_STR);
+            $stmt->bindParam(':start',$start,PDO::PARAM_INT);
+            $stmt->bindParam(':limmit',$limit,PDO::PARAM_INT);
+            if($stmt->execute()){
+                if($stmt->rowCount() > 0){
+                    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                }
+            }
+            $stmt->closeCursor();
+        }
+
+        return $data;
+    }
+
+    public function getAllDataUser($keyword = '')
     {
         // viet model lay tat du lieu ra
         $data = [];
-        $sql = "SELECT * FROM admins";
+        $key = "%".$keyword."%";
+
+        $sql = "SELECT * FROM admins AS a WHERE a.username LIKE :user OR a.email LIKE :email";
         $stmt = $this->pd->prepare($sql);
         if($stmt){
+            $stmt->bindParam(':user',$key,PDO::PARAM_STR);
+            $stmt->bindParam(':email',$key,PDO::PARAM_STR);
             if($stmt->execute()){
                 if($stmt->rowCount() > 0){
                     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
